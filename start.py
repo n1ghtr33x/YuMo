@@ -1,5 +1,3 @@
-import os
-import subprocess
 from subprocess import Popen, PIPE
 
 api_id = input('API_ID: ')

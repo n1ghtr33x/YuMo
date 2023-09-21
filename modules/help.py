@@ -10,7 +10,8 @@ async def help_cmd(_, message: Message):
     if len(message.command) == 1:
         msg_edited = False
         text = (
-            "<b>Помощь для <emoji id='5435965782414602696'>🕊</emoji><a href=https://t.me/irisobote>-YuMo UserBot-</a><emoji id='5435965782414602696'>🕊</emoji>\n"
+            "<b>Помощь для <emoji id='5435965782414602696'>🕊</emoji><a href=https://t.me/irisobote>-YuMo "
+            "UserBot-</a><emoji id='5435965782414602696'>🕊</emoji>\n"
             f"Для большей информации о модуле,\nпиши <code>{prefix}help</code> <code>[module]</code>\n\n"
             f"<emoji id='5188377234380954537'>🌘</emoji> {int(len(modules_help) / 1)} доступных модулей :</b>\n\n"
         )
