@@ -22,7 +22,7 @@ async def setprefix(_, message: Message):
 
 @Client.on_message(filters.command('prefix', prefix) & filters.me)
 async def prefix(_, message: Message):
-    await message.edit(f'Текущий префикс [ <code>{prefix}<code> ]')
+    await message.edit(f'Текущий префикс [ <code>{db.get("core.main", "prefix", ".")}<code> ]')
 
 
 modules_help["prefix"] = {
