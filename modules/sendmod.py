@@ -19,7 +19,7 @@ async def sendmod(client: Client, message: Message):
 
     await message.edit("<b>Загрузка...</b>")
     try:
-        module_name = message.command[1].lower()
+        module_name = message.command[1]
         if module_name in modules_help:
             text = format_module_help(module_name)
             if len(text) >= 1024:
@@ -29,7 +29,7 @@ async def sendmod(client: Client, message: Message):
                     message.chat.id, f"modules/{module_name}.py", caption=text
                 )
             elif os.path.isfile(
-                f"modules/custom_modules/{module_name.lower()}.py"
+                f"modules/custom_modules/{module_name}.py"
             ):
                 await client.send_document(
                     message.chat.id,

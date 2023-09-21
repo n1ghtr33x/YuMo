@@ -57,7 +57,7 @@ async def interact_with(message: types.Message) -> types.Message:
     Example:
     .. code-block:: python
         bot_msg = await interact_with(await bot.send_message("@BotFather", "/start"))
-    :param message: already sent message to bot
+    :param message: already send message to bot
     :return: bot's response
     """
 
@@ -112,9 +112,9 @@ def format_small_module_help(module_name: str, full=True):
     commands = modules_help[module_name]
 
     help_text = (
-        f"<b>Help for |{module_name}|\n\nCommands list:\n"
+        f"<b>Помощь для |{module_name}|\n\nСписок команд:\n"
         if full
-        else "<b>Commands list:\n"
+        else "<b>Список команд:\n"
     )
     for command, desc in commands.items():
         cmd = command.split(maxsplit=1)

@@ -58,6 +58,9 @@ class MongoDatabase(Database):
 
 
 class SqliteDatabase(Database):
+    """
+    :param file: DataBase file
+    """
     def __init__(self, file):
         self._conn = sqlite3.connect(file, check_same_thread=False)
         self._conn.row_factory = sqlite3.Row

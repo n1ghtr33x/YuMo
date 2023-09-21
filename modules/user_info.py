@@ -28,7 +28,7 @@ async def get_user_inf(client: Client, message: Message):
         username = f"@{user.username}"
     about = "None" if full_user.about is None else full_user.about
 
-    user_info = f"""|=<b>Username: {username}
+    user_info = f"""|-<b>Username: {username}
 |-Id: <code>{user.id}</code>
 |-Bot: <code>{user.bot}</code>
 |-Scam: <code>{user.scam}</code>
@@ -77,7 +77,7 @@ async def get_full_user_inf(client: Client, message: Message):
         else:
             username = f"@{user.username}"
         about = "None" if full_user.about is None else full_user.about
-        user_info = f"""|=<b>Username: {username}
+        user_info = f"""|-<b>Username: {username}
 |-Id: <code>{user.id}</code>
 |-Account creation date: <code>{creation_date}</code>
 |-Bot: <code>{user.bot}</code>

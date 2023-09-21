@@ -99,7 +99,7 @@ async def main():
             ],
         )
 
-    logging.info("YuMo-Userbot started!")
+    logging.info("YuMo Userbot started!")
 
     await idle()
 

@@ -1,5 +1,5 @@
 from subprocess import Popen, PIPE
-
+print('\n')
 api_id = input('API_ID: ')
 api_hash = input('API_HASH: ')
 database_type = input('Choose database type:\n[1] MongoDB db_url\n[2] Sqlite (default)\n')

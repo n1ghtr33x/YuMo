@@ -11,7 +11,9 @@ my_system = platform.uname()
 
 @Client.on_message(filters.command('info', prefix) & filters.me)
 async def info(_, message: Message):
-    await message.edit("<emoji id='5435965782414602696'>🕊</emoji><a href=https://t.me/irisobote>-YuMo UserBot-</a><emoji id='5435965782414602696'>🕊</emoji>\n\n"
+    await message.edit("<emoji id='5435965782414602696'>🕊</emoji>"
+                       "<a href=https://t.me/irisobote>-YuMo UserBot-</a>"
+                       "<emoji id='5435965782414602696'>🕊</emoji>\n\n"
                        f"<b>| Версия [{userbot_version}]\n"
                        f"| Префикс [ {prefix} ]\n"
                        f"| Канал юзербота <a href='t.me/irisobote'>{'{клик}'}</a>\n"

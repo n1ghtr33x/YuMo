@@ -13,9 +13,12 @@ from utils.misc import modules_help, prefix
 async def setprefix(_, message: Message):
     if len(message.command) > 1:
         pref = message.command[1]
-        db.set("core.main", "prefix", pref)
-        await message.edit(f"<b>Префикс [ <code>{pref}</code> ] установлен!</b>")
-        restart()
+        if len(pref) > 1:
+            db.set("core.main", "prefix", pref)
+            await message.edit(f"<b>Префикс [ <code>{pref}</code> ] установлен!</b>")
+            restart()
+        else:
+            await message.edit(f'Префикс должен содержать один символ!')
     else:
         await message.edit("<b>Префикс не может быть пустой!</b>")
 

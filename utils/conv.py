@@ -156,7 +156,7 @@ class Conversation:
                 Date when the message will be automatically sent. Unix time.
 
         Returns:
-            :obj:`~pyrogram.types.Message`: On success, the sent text message is returned.
+            :obj:`~pyrogram.types.Message`: On success, the send text message is returned.
         """
 
         sent = await self.client.send_message(
