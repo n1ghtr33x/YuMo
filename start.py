@@ -8,15 +8,19 @@ database_type = input('Choose database type:\n[1] MongoDB db_url\n[2] Sqlite (de
 if database_type == 1:
     db_name = "YuMo_Userbot"
     db_type = "mongodb"
+    db_url = input('Database url: ')
 else:
     db_name = "db.sqlite3"
     db_type = "sqlite3"
+    db_url = 'None'
+
 f = open('.env', 'w')
 f.write(f'API_ID={api_id}\n')
 f.write(f'API_HASH={api_hash}\n')
 f.write(f'DATABASE_TYPE={db_type}\n')
 f.write(f'DATABASE_NAME={db_name}\n')
-f.write(f'DATABASE_URL=None\n')
+f.write(f'DATABASE_URL={db_url}\n')
+
 cmd_obj1 = Popen(
         "pip install -r requirements.txt",
         shell=True,
