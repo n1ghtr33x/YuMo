@@ -8,6 +8,8 @@ from utils.scripts import format_exc, interact_with, interact_with_to_delete
 
 @Client.on_message(filters.command("inf", prefix) & filters.me)
 async def get_user_inf(client: Client, message: Message):
+    await message.edit("<b>Загрузка информации...</b>")
+
     if len(message.command) >= 2:
         peer = await client.resolve_peer(message.command[1])
     elif message.reply_to_message and message.reply_to_message.from_user:
