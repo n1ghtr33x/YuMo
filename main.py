@@ -1,5 +1,3 @@
-#  YuMo-Userbot - telegram userbot
-#  Copyright (C) 2023-present YuMo Userbot Organization
 import os
 import logging
 import sqlite3
@@ -89,7 +87,6 @@ async def main():
             pass
         db.remove("core.updater", "restart_info")
 
-    # required for sessionkiller module
     if db.get("core.sessionkiller", "enabled", False):
         db.set(
             "core.sessionkiller",

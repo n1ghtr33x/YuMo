@@ -27,21 +27,17 @@ if __name__ == "__main__":
             ) from e
 
     install_type = sys.argv[1] if len(sys.argv) > 1 else "3"
-    if install_type == "1":
-        restart = "pm2 restart dragon"
-    elif install_type == "2":
-        restart = "sudo systemctl restart dragon"
+    if install_type == '3':
+        restart = "python3 main.py"
     else:
-        restart = "cd Dragon-Userbot/ && python main.py"
+        restart = 'python3 main.py'
 
     app.start()
     try:
         app.send_message(
             "me",
-            f"<b>[{datetime.datetime.now()}] Dragon-Userbot launched! \n"
-            "Channel: @Dragon_Userb0t\n"
-            "Custom modules: @Dragon_Userb0t_modules\n"
-            "Chat [RU]: @Dragon_Userb0t_chat\n"
+            f"<b>[{datetime.datetime.now()}] YuMo Userbot launched! \n"
+            "Channel: @irisobote\n"
             f"For restart, enter:</b>\n"
             f"<code>{restart}</code>",
         )
