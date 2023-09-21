@@ -20,7 +20,7 @@ async def help_cmd(_, message: Message):
             modules_help.items(), key=lambda x: x[0]
         ):
             count += 1
-            text += "[{}][<emoji id='6298505110779594363'>❤️</emoji>] • {}: {}\n".format(
+            text += "[{}] [<emoji id='6298505110779594363'>❤️</emoji>] • {}: {}\n".format(
                 count,
                 module_name.title(),
                 " ".join(
