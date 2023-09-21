@@ -1,13 +1,9 @@
-import os
-import sys
-import subprocess
-
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
-from utils.misc import modules_help, prefix, requirements_list
+from utils.misc import modules_help, prefix
 from utils.db import db
-from utils.scripts import format_exc, restart
+from utils.scripts import restart
 
 
 @Client.on_message(filters.command("restart", prefix) & filters.me)

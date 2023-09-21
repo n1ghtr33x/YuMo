@@ -3,7 +3,6 @@ from pyrogram.types import Message
 
 from utils.misc import modules_help, prefix, userbot_version, python_version
 import platform
-import socket
 import os
 
 

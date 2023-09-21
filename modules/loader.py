@@ -5,7 +5,7 @@ from pyrogram.types import Message
 
 from utils.misc import modules_help, prefix
 from utils.db import db
-from utils.scripts import restart, unload_module, format_exc, load_module
+from utils.scripts import unload_module, format_exc, load_module
 
 BASE_PATH = os.path.abspath(os.getcwd())
 

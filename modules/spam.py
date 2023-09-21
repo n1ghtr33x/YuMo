@@ -6,7 +6,7 @@ from utils.misc import modules_help, prefix
 from asyncio import sleep
 
 
-ModuleName = 'spam'
+ModuleName = 'core.spam'
 
 
 @Client.on_message(filters.command('spam', prefix) & filters.me)

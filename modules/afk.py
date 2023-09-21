@@ -7,7 +7,7 @@ from utils.db import db
 
 
 afk_info = db.get(
-    "afk",
+    "main.afk",
     "afk_info",
     {
         "start": 0,
@@ -51,7 +51,7 @@ async def afk(_, message):
     else:
         await message.edit(f'<b>Я вошел в режим афк</b>')
 
-    db.set("afk", "afk_info", afk_info)
+    db.set("core.afk", "afk_info", afk_info)
 
 
 @Client.on_message(filters.command("unafk", prefix) & filters.me)
@@ -65,7 +65,7 @@ async def unafk(_, message):
     else:
         await message.edit("<b>Ты не в афк.</b>")
 
-    db.set("afk", "afk_info", afk_info)
+    db.set("core.afk", "afk_info", afk_info)
 
 
 modules_help["afk"] = {"afk [сообщение]": "Войти в афк", "unafk": "Выйти из афк"}
