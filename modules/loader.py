@@ -5,7 +5,7 @@ from pyrogram.types import Message
 
 from utils.misc import modules_help, prefix
 from utils.db import db
-from utils.scripts import unload_module, format_exc, load_module
+from utils.scripts import unload_module, format_exc, load_module, restart
 
 BASE_PATH = os.path.abspath(os.getcwd())
 
@@ -30,6 +30,7 @@ async def loadmod(client: Client, message: Message):
             await message.edit("<b>Загрузка модуля... (5 sec.)</b>")
             await load_module(f'{message.reply_to_message.document.file_name.replace(".py", "")}', client)
             await message.edit("Модуль загружен!")
+            restart()
         else:
             await message.edit("Это не модуль!")
     else:
