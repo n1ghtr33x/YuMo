@@ -29,7 +29,6 @@ async def loadmod(client: Client, message: Message):
                                         f'modules/custom_modules/{message.reply_to_message.document.file_name}')
             await message.edit("<b>Загрузка модуля... (5 sec.)</b>")
             await load_module(f'{message.reply_to_message.document.file_name.replace(".py", "")}', client)
-            await message.edit("Модуль загружен!")
             restart()
         else:
             await message.edit("Это не модуль!")
