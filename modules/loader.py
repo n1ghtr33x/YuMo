@@ -60,7 +60,7 @@ async def del_all(_, message: Message):
     files = os.listdir('modules/custom_modules')
     if files:
         for i in files:
-            os.remove(i)
+            os.remove(f'modules/custom_modules/{i}')
     await message.edit('Все модули успешно удалены!')
     restart()
 
