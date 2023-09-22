@@ -55,7 +55,18 @@ async def unload_mods(client: Client, message: Message):
             f"<b>Модуль <code>{module_name}</code> выгружен и удален!</b>")
 
 
+@Client.on_message(filters.command('del_all', prefix) & filters.me)
+async def del_all(_, message: Message):
+    files = os.listdir('modules/custom_modules')
+    if files:
+        for i in files:
+            os.remove(i)
+    await message.edit('Все модули успешно удалены!')
+    restart()
+
+
 modules_help['loader'] = {
     'loadmod [реплай на модуль]': 'загрузить модуль из файла',
-    'unloadmod [название модуля]': 'выгрузить и удалить модуль'
+    'unloadmod [название модуля]': 'выгрузить и удалить модуль',
+    'del_all': 'удалить все кастомные модули'
 }
