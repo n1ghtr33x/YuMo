@@ -1,3 +1,4 @@
 /modules/custom_modules
 *.session
 *.sqlite3
+*.env
