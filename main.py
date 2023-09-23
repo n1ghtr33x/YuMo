@@ -78,6 +78,7 @@ async def main():
             "restart": "<b>Успешная перезагрузка!</b>",
             "update": "<b>Update process completed!</b>",
             "loadmodule": "<b>Модуль успешно загружен!</b>",
+            "dellmodule": "<b>Все модули успешно удалены!</b>"
         }[info["type"]]
         try:
             await app.edit_message_text(

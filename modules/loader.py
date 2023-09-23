@@ -56,12 +56,21 @@ async def unload_mods(client: Client, message: Message):
 
 @Client.on_message(filters.command('del_all', prefix) & filters.me)
 async def del_all(_, message: Message):
+    await message.edit('Удаление..')
+    db.set(
+        "core.updater",
+        "restart_info",
+        {
+            "type": "dellmodule",
+            "chat_id": message.chat.id,
+            "message_id": message.id,
+        },
+    )
     files = os.listdir('modules/custom_modules')
     if files:
         for i in files:
             if len(i.split('.')) == 2:
                 os.remove(f'modules/custom_modules/{i}')
-    await message.edit('Все модули успешно удалены!')
     restart()
 
 
