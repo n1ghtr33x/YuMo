@@ -37,7 +37,7 @@ if __name__ == "__main__":
         app.send_message(
             "me",
             f"<b>[{datetime.datetime.now()}] YuMo Userbot launched! \n"
-            "Channel: @irisobote\n"
+            "Channel: @n1ghtr33x_channel\n"
             f"For restart, enter:</b>\n"
             f"<code>{restart}</code>",
         )

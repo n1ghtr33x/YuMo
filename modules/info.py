@@ -16,7 +16,7 @@ async def info(_, message: Message):
                        "<emoji id='5435965782414602696'>🕊</emoji>\n\n"
                        f"<b>| Версия [{userbot_version}]\n"
                        f"| Префикс [ {prefix} ]\n"
-                       f"| Канал юзербота <a href='t.me/irisobote'>{'{клик}'}</a>\n"
+                       f"| Канал юзербота <a href='https://t.me/n1ghtr33x_channel'>{'{клик}'}</a>\n"
                        f"| Разработчик <a href='t.me/d08ee'>Чайна</a>\n"
                        f"| Версия Python: {python_version}\n"
                        f"| Система: {my_system.system}\n"
