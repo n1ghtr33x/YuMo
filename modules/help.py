@@ -15,13 +15,10 @@ async def help_cmd(_, message: Message):
             f"Для большей информации о модуле,\nпиши <code>{prefix}help</code> <code>[module]</code>\n\n"
             f"<emoji id='5188377234380954537'>🌘</emoji> {int(len(modules_help) / 1)} доступных модулей:</b>\n\n"
         )
-        count = 0
         for module_name, module_commands in sorted(
             modules_help.items(), key=lambda x: x[0]
         ):
-            count += 1
-            text += "[{}] [<emoji id='6298505110779594363'>❤️</emoji>] • {}: {}\n".format(
-                count,
+            text += "[<emoji id='6298505110779594363'>❤️</emoji>] • {}: {}\n".format(
                 module_name.title(),
                 " ".join(
                     [
