@@ -47,4 +47,4 @@ async def unaur(_, message: Message):
     db.set("core.aur", "message", 'None')
 
 
-modules_help[""] = {"autoresponder [сообщение]": "включить автоответчик", "unautoresponder": "отключить автоответчик"}
+modules_help["autoresponder"] = {"autoresponder [сообщение]": "включить автоответчик", "unautoresponder": "отключить автоответчик"}
