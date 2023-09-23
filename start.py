@@ -1,8 +1,10 @@
-from subprocess import Popen, PIPE
+import os
+
+
 print('\n')
 api_id = input('API_ID: ')
 api_hash = input('API_HASH: ')
-database_type = input('Choose database type:\n[1] MongoDB db_url\n[2] Sqlite (default)\n')
+database_type = input('Choose database type:\n[1] MongoDB db_url\n[2] Sqlite (default)\n\n')
 
 if database_type == 1:
     db_name = "YuMo_Userbot"
@@ -19,16 +21,20 @@ f.write(f'API_HASH={api_hash}\n')
 f.write(f'DATABASE_TYPE={db_type}\n')
 f.write(f'DATABASE_NAME={db_name}\n')
 f.write(f'DATABASE_URL={db_url}\n')
+f.close()
 
+
+os.system('python3 install.py 3')
+"""
 cmd_obj = Popen(
-        "python3 install.py 3",
-        shell=True,
-        stdout=PIPE,
-        stderr=PIPE,
-        text=True,
-    )
-
+    "python3 install.py 3",
+    shell=True,
+    stdout=PIPE,
+    stderr=PIPE,
+    text=True,
+)
+"""
 print("""============================
 Great! YuMo Userbot installed successfully!
-Start with: \\"python3 main.py\\
 ============================""")
+os.system('python3 main.py')

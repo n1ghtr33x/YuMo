@@ -2,3 +2,5 @@
 *.session
 *.sqlite3
 *.env
+*.session-journal
+*.session-old
