@@ -6,4 +6,4 @@
 <b>Success!</b>
 
 #### ______________________________
-### developer [n1ghtr33x](t.me/n1ghtr33x)
+### developer [n1ghtr33x](https://t.me/n1ghtr33x)
