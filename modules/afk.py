@@ -30,9 +30,14 @@ async def afk_handler(_, message: types.Message):
     start = datetime.datetime.fromtimestamp(afk_info["start"])
     end = datetime.datetime.now().replace(microsecond=0)
     afk_time = end - start
-    await message.reply(
-        f"<b>Я в афк.. (уже {afk_time})\n" f"Сообщение:</b> <i>{afk_info['reason']}</i>"
-    )
+    if afk_info['reason'] != "None":
+        await message.reply(
+            f"<b>Я в афк.. (уже {afk_time})"
+        )
+    else:
+        await message.reply(
+            f"<b>Я в афк.. (уже {afk_time})\n" f"Сообщение:</b> <i>{afk_info['reason']}</i>"
+        )
 
 
 @Client.on_message(filters.command("afk", prefix) & filters.me)

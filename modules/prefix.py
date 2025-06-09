@@ -13,7 +13,7 @@ from utils.misc import modules_help, prefix
 async def setprefix(_, message: Message):
     if len(message.command) > 1:
         pref = message.command[1]
-        if len(pref) > 1:
+        if len(pref) == 1:
             db.set("core.main", "prefix", pref)
             await message.edit(f"<b>Префикс [ <code>{pref}</code> ] установлен!</b>")
             restart()

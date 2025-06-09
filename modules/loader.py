@@ -39,7 +39,7 @@ async def loadmod(client: Client, message: Message):
 @Client.on_message(filters.command(["unloadmod", "ulm"], prefix) & filters.me)
 async def unload_mods(client: Client, message: Message):
     if len(message.command) <= 1:
-        return await message.edit("<b>Выьери модуль для выгрузки\n<code>.unloadmod</code> [module name] </b>")
+        return await message.edit("<b>Выбери модуль для выгрузки\n<code>.unloadmod</code> [module name] </b>")
 
     module_name = message.command[1].lower()
 
@@ -75,7 +75,7 @@ async def del_all(_, message: Message):
 
 
 modules_help['loader'] = {
-    'loadmod [реплай на модуль]': 'загрузить модуль из файла',
+    'loadmod [ответ на модуль]': 'загрузить модуль из файла',
     'unloadmod [название модуля]': 'выгрузить и удалить модуль',
     'del_all': 'удалить все кастомные модули'
 }
