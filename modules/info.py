@@ -23,5 +23,10 @@ async def info(_, message: Message):
                        f"| Количество ядер CPU: {os.cpu_count()}</b>", disable_web_page_preview=True)
 
 modules_help['info'] = {
+    "__meta__": {
+        "version": "1.0.0",
+        "description": "Информация о юзерботе и системе",
+        "pic": "https://i.ibb.co/4ZfyNcL6/help.png",
+    },
     'info': 'иформация о юзерботе'
 }

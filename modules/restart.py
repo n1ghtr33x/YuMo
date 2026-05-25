@@ -24,5 +24,10 @@ async def restart_cmd(_, message: Message):
     restart()
 
 modules_help['restart'] = {
+    "__meta__": {
+        "version": "1.0.0",
+        "description": "Перезапуск юзербота",
+        "pic": "https://i.ibb.co/xSR9fQHH/restart.png",
+    },
     'restart': 'перезагрузить YuMo'
 }

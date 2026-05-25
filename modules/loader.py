@@ -77,6 +77,11 @@ async def del_all(_, message: Message):
 
 
 modules_help['loader'] = {
+    "__meta__": {
+        "version": "1.0.0",
+        "description": "Загрузка и управление модулями",
+        "pic": "https://i.ibb.co/FbNycfVQ/loader.png",
+    },
     'loadmod/lm [ответ на модуль]': 'загрузить модуль из файла',
     'unloadmod/ulm [название модуля]': 'выгрузить и удалить модуль',
     'del_all': 'удалить все кастомные модули'

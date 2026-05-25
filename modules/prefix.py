@@ -31,6 +31,11 @@ async def prefix(_, message: Message):
 
 
 modules_help["prefix"] = {
+    "__meta__": {
+        "version": "1.0.0",
+        "description": "Настройка и управление префиксами команд",
+        "pic": "https://i.ibb.co/Q7tP0Y6z/prefix.png",
+    },
     "setprefix [prefix]": "установить свой префикс.",
     "prefix": "посмотреть префикс",
 }

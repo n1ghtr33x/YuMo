@@ -245,5 +245,10 @@ async def inline_sendmod(app, query, args):
 
 
 modules_help["sendmod"] = {
+    "__meta__": {
+        "version": "1.0.0",
+        "description": "Отправка модулей юзербота в чат",
+        "pic": "ttps://i.ibb.co/xtHGHQZ1/sendmod.png",
+    },
     "sendmod [module_name]": "отправить модуль в чат.",
 }

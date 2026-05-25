@@ -53,5 +53,10 @@ async def inline_ping(app, query, args):
     ]
 
 modules_help["ping"] = {
+    "__meta__": {
+        "version": "1.0.0",
+        "description": "Проверка задержки соединения",
+        "pic": "https://i.ibb.co/DfPSLWZ9/ping.png",
+    },
     "ping": "проверить скорость отклика Telegram."
 }
