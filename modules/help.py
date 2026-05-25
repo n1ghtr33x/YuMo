@@ -3,6 +3,7 @@ from pyrogram.types import Message
 
 from utils.misc import modules_help, prefix
 from utils.scripts import format_module_help
+from pyrogram.errors import WebpageMediaEmpty, PhotoInvalidDimensions, MediaEmpty
 
 
 @Client.on_message(filters.command(["help", "h"], prefix) & filters.me)
@@ -46,13 +47,14 @@ async def help_cmd(_, message: Message):
         text, pic = format_module_help(message.command[1].lower())
 
         if pic:
-            await message.reply_photo(
-                photo=pic,
-                caption=text
-            )
-
-            await message.delete()
-
+            try:
+                await message.reply_photo(
+                    photo=pic,
+                    caption=text
+                )
+                await message.delete()
+            except (WebpageMediaEmpty, PhotoInvalidDimensions, MediaEmpty):
+                await message.edit(text)
         else:
             await message.edit(text)
     else:
