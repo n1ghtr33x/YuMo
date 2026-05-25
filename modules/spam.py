@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from pyrogram import Client, filters
 from pyrogram.types import Message
 

@@ -4,6 +4,7 @@ import os
 print('\n')
 api_id = input('API_ID: ')
 api_hash = input('API_HASH: ')
+bot_token = input('BOT_TOKEN: ')
 database_type = input('Choose database type:\n[1] MongoDB db_url\n[2] Sqlite (default)\n\n')
 
 if database_type == 1:
@@ -18,6 +19,7 @@ else:
 f = open('.env', 'w')
 f.write(f'API_ID={api_id}\n')
 f.write(f'API_HASH={api_hash}\n')
+f.write(f'BOT_TOKEN={bot_token}\n')
 f.write(f'DATABASE_TYPE={db_type}\n')
 f.write(f'DATABASE_NAME={db_name}\n')
 f.write(f'DATABASE_URL={db_url}\n')

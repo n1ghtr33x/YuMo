@@ -21,3 +21,4 @@ pytube
 click
 
 datetime
+yt-dlp

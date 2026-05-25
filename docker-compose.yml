@@ -1,0 +1,7 @@
+services:
+  userbot:
+    build: .
+    container_name: userbot
+    restart: unless-stopped
+    volumes:
+      - .:/app

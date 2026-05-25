@@ -4,3 +4,6 @@
 *.env
 *.session-journal
 *.session-old
+*.venv
+.venv
+*.venv.venv/
