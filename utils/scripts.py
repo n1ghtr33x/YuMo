@@ -105,7 +105,7 @@ async def interact_with(message: types.Message) -> types.Message:
     return response[0]
 
 
-def format_module_help(module_name: str) -> str:
+def format_module_help(module_name: str):
     module = modules_help[module_name]
     meta = module.get("__meta__", {})
 
@@ -119,15 +119,11 @@ def format_module_help(module_name: str) -> str:
     }
 
     text = (
-        f"<b>Модуль: <code>{module_name}</code></b>\n"
+        f"<b>{module_name.title()}</b>\n"
         f"<b>Версия:</b> <code>{version}</code>\n"
-        f"<b>Описание:</b> <i>{description}</i>\n"
+        f"<b>Описание:</b> <i>{description}</i>\n\n"
+        f"<b>Команды:</b>\n"
     )
-
-    if pic:
-        text += f"<b>Картинка:</b> <a href='{pic}'>link</a>\n"
-
-    text += "\n<b>Команды:</b>\n"
 
     for cmd, desc in commands.items():
         parts = cmd.split(maxsplit=1)
@@ -138,8 +134,7 @@ def format_module_help(module_name: str) -> str:
             f" — <i>{desc}</i>"
         )
 
-    return text
-
+    return text, pic
 
 def format_small_module_help(module_name: str, full: bool = True) -> str:
     commands = modules_help[module_name]

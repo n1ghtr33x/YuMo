@@ -43,7 +43,18 @@ async def help_cmd(_, message: Message):
         else:
             await message.edit(text, disable_web_page_preview=True)
     elif message.command[1].lower() in modules_help:
-        await message.edit(format_module_help(message.command[1].lower()))
+        text, pic = format_module_help(message.command[1].lower())
+
+        if pic:
+            await message.reply_photo(
+                photo=pic,
+                caption=text
+            )
+
+            await message.delete()
+
+        else:
+            await message.edit(text)
     else:
         command_name = message.command[1].lower()
         for name, module_data in modules_help.items():
