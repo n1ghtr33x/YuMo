@@ -83,7 +83,7 @@ modules_help["help"] = {
     "__meta__": {
         "version": "1.0.0",
         "description": "Система помощи по модулям",
-        "pic": "https://i.imgur.com/OIORfaj.jpeg",
+        "pic": "https://i.ibb.co/4ZfyNcL6/help.png",
     },
     "help [module]": "Get common/module/command help",
 }
