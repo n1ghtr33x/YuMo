@@ -105,25 +105,40 @@ async def interact_with(message: types.Message) -> types.Message:
     return response[0]
 
 
-def format_module_help(module_name: str, full: bool = True) -> str:
-    commands = modules_help[module_name]
+def format_module_help(module_name: str) -> str:
+    module = modules_help[module_name]
+    meta = module.get("__meta__", {})
 
-    help_text = (
-        f"<b>Помощь для |{module_name}|\n\nИспользование:</b>\n"
-        if full
-        else "<b>Использование:</b>\n"
+    version = meta.get("version", "unknown")
+    description = meta.get("description", "Без описания")
+    pic = meta.get("pic")
+
+    commands = {
+        k: v for k, v in module.items()
+        if k != "__meta__"
+    }
+
+    text = (
+        f"<b>Модуль: <code>{module_name}</code></b>\n"
+        f"<b>Версия:</b> <code>{version}</code>\n"
+        f"<b>Описание:</b> <i>{description}</i>\n"
     )
 
-    for command, desc in commands.items():
-        cmd = command.split(maxsplit=1)
-        args = f" <code>{cmd[1]}</code>" if len(cmd) > 1 else ""
+    if pic:
+        text += f"<b>Картинка:</b> <a href='{pic}'>link</a>\n"
 
-        help_text += (
-            f"<code>{prefix}{cmd[0]}</code>{args} — "
-            f"<i>{desc}</i>\n"
+    text += "\n<b>Команды:</b>\n"
+
+    for cmd, desc in commands.items():
+        parts = cmd.split(maxsplit=1)
+
+        text += (
+            f"\n<code>{prefix}{parts[0]}</code>"
+            f"{' <code>' + parts[1] + '</code>' if len(parts) > 1 else ''}"
+            f" — <i>{desc}</i>"
         )
 
-    return help_text
+    return text
 
 
 def format_small_module_help(module_name: str, full: bool = True) -> str:

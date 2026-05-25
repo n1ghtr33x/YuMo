@@ -15,15 +15,18 @@ async def help_cmd(_, message: Message):
             f"Для большей информации о модуле,\nпиши <code>{prefix}help</code> <code>[module]</code>\n\n"
             f"<emoji id='5188377234380954537'>🌘</emoji> {int(len(modules_help) / 1)} доступных модулей:</b>\n\n"
         )
-        for module_name, module_commands in sorted(
-            modules_help.items(), key=lambda x: x[0]
-        ):
+        for module_name, module_data in sorted(modules_help.items(), key=lambda x: x[0]):
+            commands = {
+                k: v for k, v in module_data.items()
+                if k != "__meta__"
+            }
+
             text += "[<emoji id='6298505110779594363'>❤️</emoji>] • {}: {}\n".format(
                 module_name.title(),
                 " ".join(
                     [
                         f"<code>{prefix + cmd_name.split()[0]}</code>"
-                        for cmd_name in module_commands.keys()
+                        for cmd_name in commands.keys()
                     ]
                 ),
             )
@@ -43,7 +46,12 @@ async def help_cmd(_, message: Message):
         await message.edit(format_module_help(message.command[1].lower()))
     else:
         command_name = message.command[1].lower()
-        for name, commands in modules_help.items():
+        for name, module_data in modules_help.items():
+            commands = {
+                k: v for k, v in module_data.items()
+                if k != "__meta__"
+            }
+
             for command in commands.keys():
                 if command.split()[0] == command_name:
                     cmd = command.split(maxsplit=1)
@@ -59,5 +67,10 @@ async def help_cmd(_, message: Message):
 
 
 modules_help["help"] = {
-    "help [module/command name]": "Get common/module/command help"
+    "__meta__": {
+        "version": "1.0.0",
+        "description": "Система помощи по модулям",
+        "pic": "https://example.com/help.png",
+    },
+    "help [module/command name]": "Get common/module/command help",
 }
