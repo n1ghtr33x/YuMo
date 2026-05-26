@@ -66,9 +66,9 @@ def register_module_strings(
     MODULE_STRINGS[module_name] = strings
 
 
-def t(key: str, lang: str | None = None, **kwargs: Any) -> str:
-    lang = lang or get_lang()
-    text = STRINGS.get(lang, {}).get(key)
+def t(key: str, locale: str | None = None, **kwargs: Any) -> str:
+    locale = locale or get_lang()
+    text = STRINGS.get(locale, {}).get(key)
 
     if text is None:
         text = STRINGS[DEFAULT_LANG].get(key, key)
@@ -84,12 +84,12 @@ class Translator:
     def __call__(
         self,
         key: str,
-        lang: str | None = None,
+        locale: str | None = None,
         **kwargs: Any,
     ) -> str:
-        lang = lang or get_lang()
+        locale = locale or get_lang()
         module_strings = MODULE_STRINGS.get(self.module_name, {})
-        text = module_strings.get(lang, {}).get(key)
+        text = module_strings.get(locale, {}).get(key)
 
         if text is None:
             text = module_strings.get(DEFAULT_LANG, {}).get(key, key)
