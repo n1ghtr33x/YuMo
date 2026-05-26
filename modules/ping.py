@@ -74,8 +74,8 @@ async def inline_ping(app, query, args):
 modules_help["ping"] = {
     "__meta__": {
         "version": "1.0.0",
-        "description": tr("meta.description"),
+        "description": tr.lazy("meta.description"),
         "pic": "https://i.ibb.co/DfPSLWZ9/ping.png",
     },
-    "ping": tr("help.ping"),
+    "ping": tr.lazy("help.ping"),
 }

@@ -76,6 +76,21 @@ def t(key: str, locale: str | None = None, **kwargs: Any) -> str:
     return _format(text, kwargs)
 
 
+class LazyTranslation:
+    def __init__(
+        self,
+        translator: "Translator",
+        key: str,
+        kwargs: dict[str, Any],
+    ):
+        self.translator = translator
+        self.key = key
+        self.kwargs = kwargs
+
+    def __str__(self) -> str:
+        return self.translator(self.key, **self.kwargs)
+
+
 class Translator:
     def __init__(self, module_name: str, strings: dict[str, dict[str, str]]):
         self.module_name = module_name
@@ -95,6 +110,9 @@ class Translator:
             text = module_strings.get(DEFAULT_LANG, {}).get(key, key)
 
         return _format(text, kwargs)
+
+    def lazy(self, key: str, **kwargs: Any) -> LazyTranslation:
+        return LazyTranslation(self, key, kwargs)
 
 
 _ = t
