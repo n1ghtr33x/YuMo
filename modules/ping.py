@@ -11,25 +11,21 @@ from pyrogram.types import (
 
 from utils.misc import modules_help, prefix
 from utils.inline import inline_command
+from utils.i18n import t
 
 
 @Client.on_message(filters.command("ping", prefix) & filters.me)
 async def ping(_, message: Message):
     t1 = time()
 
-    await message.edit(
-        '<emoji id="6255963511252322252">✔️</emoji> понг..'
-    )
+    await message.edit(t("ping.wait"))
 
     t2 = time()
 
-    await message.edit(
-        f'<emoji id="6255963511252322252">✔️</emoji> '
-        f'понг.. ({round((t2 - t1) * 1000)} ms)'
-    )
+    await message.edit(t("ping.done", ms=round((t2 - t1) * 1000)))
 
 
-@inline_command("ping", "Проверить работу inline")
+@inline_command("ping", t("ping.inline.description"))
 async def inline_ping(app, query, args):
     t1 = time()
 
@@ -55,8 +51,8 @@ async def inline_ping(app, query, args):
 modules_help["ping"] = {
     "__meta__": {
         "version": "1.0.0",
-        "description": "Проверка задержки соединения",
+        "description": t("ping.meta.description"),
         "pic": "https://i.ibb.co/DfPSLWZ9/ping.png",
     },
-    "ping": "проверить скорость отклика Telegram."
+    "ping": t("ping.help.ping")
 }
