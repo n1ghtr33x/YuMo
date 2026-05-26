@@ -13,11 +13,6 @@ STRINGS: dict[str, dict[str, str]] = {
         "i18n.unknown": "<b>Неизвестный язык:</b> <code>{lang}</code>\n<b>Доступно:</b> <code>{available}</code>",
         "i18n.meta.description": "Настройка языка юзербота",
         "i18n.help.lang": "посмотреть или изменить язык.",
-        "ping.wait": '<emoji id="6255963511252322252">✔️</emoji> понг..',
-        "ping.done": '<emoji id="6255963511252322252">✔️</emoji> понг.. ({ms} ms)',
-        "ping.inline.description": "Проверить работу inline",
-        "ping.meta.description": "Проверка задержки соединения",
-        "ping.help.ping": "проверить скорость отклика Telegram.",
     },
     "en": {
         "i18n.current": "<b>Current language:</b> <code>{lang}</code>\n<b>Available:</b> <code>{available}</code>",
@@ -25,13 +20,10 @@ STRINGS: dict[str, dict[str, str]] = {
         "i18n.unknown": "<b>Unknown language:</b> <code>{lang}</code>\n<b>Available:</b> <code>{available}</code>",
         "i18n.meta.description": "Userbot language settings",
         "i18n.help.lang": "show or change language.",
-        "ping.wait": '<emoji id="6255963511252322252">✔️</emoji> pong..',
-        "ping.done": '<emoji id="6255963511252322252">✔️</emoji> pong.. ({ms} ms)',
-        "ping.inline.description": "Check inline response",
-        "ping.meta.description": "Connection latency check",
-        "ping.help.ping": "check Telegram response speed.",
     },
 }
+
+MODULE_STRINGS: dict[str, dict[str, dict[str, str]]] = {}
 
 
 class _SafeFormatDict(UserDict):
@@ -39,20 +31,39 @@ class _SafeFormatDict(UserDict):
         return "{" + key + "}"
 
 
+def _format(text: str, kwargs: dict[str, Any]) -> str:
+    if not kwargs:
+        return text
+
+    return text.format_map(_SafeFormatDict(kwargs))
+
+
 def available_langs() -> list[str]:
-    return sorted(STRINGS)
+    langs = set(STRINGS)
+
+    for module_strings in MODULE_STRINGS.values():
+        langs.update(module_strings)
+
+    return sorted(langs)
 
 
 def get_lang() -> str:
     lang = db.get("core.i18n", "lang", DEFAULT_LANG)
-    return lang if lang in STRINGS else DEFAULT_LANG
+    return lang if lang in available_langs() else DEFAULT_LANG
 
 
 def set_lang(lang: str) -> None:
-    if lang not in STRINGS:
+    if lang not in available_langs():
         raise ValueError(f"unknown language: {lang}")
 
     db.set("core.i18n", "lang", lang)
+
+
+def register_module_strings(
+    module_name: str,
+    strings: dict[str, dict[str, str]],
+) -> None:
+    MODULE_STRINGS[module_name] = strings
 
 
 def t(key: str, lang: str | None = None, **kwargs: Any) -> str:
@@ -62,10 +73,28 @@ def t(key: str, lang: str | None = None, **kwargs: Any) -> str:
     if text is None:
         text = STRINGS[DEFAULT_LANG].get(key, key)
 
-    if kwargs:
-        return text.format_map(_SafeFormatDict(kwargs))
+    return _format(text, kwargs)
 
-    return text
+
+class Translator:
+    def __init__(self, module_name: str, strings: dict[str, dict[str, str]]):
+        self.module_name = module_name
+        register_module_strings(module_name, strings)
+
+    def __call__(
+        self,
+        key: str,
+        lang: str | None = None,
+        **kwargs: Any,
+    ) -> str:
+        lang = lang or get_lang()
+        module_strings = MODULE_STRINGS.get(self.module_name, {})
+        text = module_strings.get(lang, {}).get(key)
+
+        if text is None:
+            text = module_strings.get(DEFAULT_LANG, {}).get(key, key)
+
+        return _format(text, kwargs)
 
 
 _ = t
