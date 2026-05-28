@@ -141,6 +141,31 @@ def _panel_markup() -> InlineKeyboardMarkup:
     )
 
 
+async def _edit_panel(client: Client, callback) -> None:
+    if callback.message:
+        await callback.message.edit_text(
+            _panel_text(),
+            reply_markup=_panel_markup(),
+            disable_web_page_preview=True,
+        )
+        return
+
+    await client.edit_inline_text(
+        callback.inline_message_id,
+        _panel_text(),
+        reply_markup=_panel_markup(),
+        disable_web_page_preview=True,
+    )
+
+
+async def _edit_callback_text(client: Client, callback, text: str) -> None:
+    if callback.message:
+        await callback.message.edit_text(text)
+        return
+
+    await client.edit_inline_text(callback.inline_message_id, text)
+
+
 def _register_settings_handlers(app: Client, owner_id: int) -> bool:
     global _handlers_registered, _owner_id
 
@@ -156,7 +181,7 @@ def _register_settings_handlers(app: Client, owner_id: int) -> bool:
     _handlers_registered = True
 
     @bot.on_callback_query(filters.regex(r"^settings:"))
-    async def settings_callback(_, callback):
+    async def settings_callback(client, callback):
         if _owner_id and callback.from_user.id != _owner_id:
             await callback.answer(tr("owner_only"), show_alert=True)
             return
@@ -169,16 +194,12 @@ def _register_settings_handlers(app: Client, owner_id: int) -> bool:
                 return
 
             if action == "refresh":
-                await callback.message.edit_text(
-                    _panel_text(),
-                    reply_markup=_panel_markup(),
-                    disable_web_page_preview=True,
-                )
+                await _edit_panel(client, callback)
                 await callback.answer(tr("refreshed"))
                 return
 
             if action == "restart":
-                await callback.message.edit_text(f"<b>{tr('restarting')}</b>")
+                await _edit_callback_text(client, callback, f"<b>{tr('restarting')}</b>")
                 await callback.answer()
                 restart()
                 return
@@ -194,18 +215,16 @@ def _register_settings_handlers(app: Client, owner_id: int) -> bool:
                     return
 
                 set_lang(value)
-                await callback.message.edit_text(
-                    _panel_text(),
-                    reply_markup=_panel_markup(),
-                    disable_web_page_preview=True,
-                )
+                await _edit_panel(client, callback)
                 await callback.answer(tr("lang_set", lang=value))
                 return
 
             if kind == "prefix":
                 db.set("core.main", "prefix", value)
-                await callback.message.edit_text(
-                    f"<b>{tr('prefix_set', prefix=value)}</b>"
+                await _edit_callback_text(
+                    client,
+                    callback,
+                    f"<b>{tr('prefix_set', prefix=value)}</b>",
                 )
                 await callback.answer()
                 restart()
