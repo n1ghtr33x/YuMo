@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import ast
+import difflib
 import os
 import shutil
 import uuid
+from datetime import datetime
 from html import escape
 from pathlib import Path
 
@@ -50,11 +53,17 @@ strings = {
         "description": "Описание",
         "author": "Автор",
         "requires": "Зависимости",
+        "warnings": "Предупреждения",
+        "warnings_none": "нет",
+        "diff": "Diff",
+        "diff_none": "нет изменений / новый модуль",
         "requires_none": "нет",
         "installing": "Загрузка модуля...",
         "installed": "Модуль {module} загружен. Перезапускаюсь...",
         "cancelled": "Загрузка отменена.",
+        "code_sent": "Код отправлен в чат.",
         "btn.install": "Загрузить",
+        "btn.code": "Код",
         "btn.cancel": "Отмена",
         "meta.description": "Загрузка и управление модулями",
         "help.load": "показать preview модуля и загрузить его кнопкой.",
@@ -77,11 +86,17 @@ strings = {
         "description": "Description",
         "author": "Author",
         "requires": "Dependencies",
+        "warnings": "Warnings",
+        "warnings_none": "none",
+        "diff": "Diff",
+        "diff_none": "no changes / new module",
         "requires_none": "none",
         "installing": "Loading module...",
         "installed": "Module {module} loaded. Restarting...",
         "cancelled": "Loading cancelled.",
+        "code_sent": "Code sent to chat.",
         "btn.install": "Load",
+        "btn.code": "Code",
         "btn.cancel": "Cancel",
         "meta.description": "Module loading and management",
         "help.load": "show module preview and load it with a button.",
@@ -98,6 +113,71 @@ BOT = "╰─────────────────────"
 ITEM = "│"
 
 
+def _target_path(module_name: str) -> Path:
+    return Path("modules/custom_modules") / f"{module_name}.py"
+
+
+def _backup_path(module_name: str) -> Path:
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    return Path("backups/modules") / f"{module_name}_{stamp}.py"
+
+
+def _scan_dangerous(path: str) -> list[str]:
+    try:
+        tree = ast.parse(Path(path).read_text(encoding="utf-8"))
+    except SyntaxError as e:
+        return [f"syntax error: {e.msg}"]
+
+    warnings = []
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name == "subprocess":
+                    warnings.append("import subprocess")
+
+        elif isinstance(node, ast.ImportFrom):
+            if node.module == "subprocess":
+                warnings.append("from subprocess import ...")
+
+        elif isinstance(node, ast.Call):
+            func = node.func
+
+            if isinstance(func, ast.Name) and func.id in {"eval", "exec"}:
+                warnings.append(f"{func.id}(...)")
+
+            elif isinstance(func, ast.Attribute):
+                if isinstance(func.value, ast.Name) and func.value.id == "os" and func.attr in {"remove", "unlink", "rmdir", "removedirs"}:
+                    warnings.append(f"os.{func.attr}(...)")
+
+    return sorted(set(warnings))
+
+
+def _format_diff(old_path: Path, new_path: Path) -> str:
+    if not old_path.exists():
+        return tr("diff_none")
+
+    old_lines = old_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    new_lines = new_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    diff = list(difflib.unified_diff(
+        old_lines,
+        new_lines,
+        fromfile=str(old_path),
+        tofile=new_path.name,
+        lineterm="",
+        n=2,
+    ))
+
+    if not diff:
+        return tr("diff_none")
+
+    text = "\n".join(diff[:40])
+    if len(diff) > 40:
+        text += "\n..."
+
+    return text[-1800:]
+
+
 def _safe_file_name(name: str) -> str:
     return os.path.basename(name).replace("/", "_")
 
@@ -110,6 +190,8 @@ def _preview_text(pending_id: str) -> str:
     data = _pending_modules[pending_id]
     meta = data["meta"]
     requires = meta.get("requires", "").strip() or tr("requires_none")
+    warnings = ", ".join(data["warnings"]) or tr("warnings_none")
+    diff = data["diff"]
 
     return (
         f"{TOP}\n"
@@ -122,6 +204,9 @@ def _preview_text(pending_id: str) -> str:
         f"{ITEM} <b>{tr('author')}:</b> <code>{escape(meta.get('author', '-'))}</code>\n"
         f"{MID}\n"
         f"{ITEM} <b>{tr('requires')}:</b> <code>{escape(requires)}</code>\n"
+        f"{ITEM} <b>{tr('warnings')}:</b> <code>{escape(warnings)}</code>\n"
+        f"{MID}\n"
+        f"{ITEM} <b>{tr('diff')}:</b>\n<code>{escape(diff)}</code>\n"
         f"{BOT}"
     )
 
@@ -130,6 +215,7 @@ def _preview_markup(pending_id: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(tr("btn.install"), callback_data=f"loader:install:{pending_id}")],
+            [InlineKeyboardButton(tr("btn.code"), callback_data=f"loader:code:{pending_id}")],
             [InlineKeyboardButton(tr("btn.cancel"), callback_data=f"loader:cancel:{pending_id}")],
         ]
     )
@@ -183,13 +269,24 @@ def _register_loader_handlers(app: Client, owner_id: int) -> bool:
                 await callback.answer()
                 return
 
+            if action == "code":
+                await app.send_document(data["chat_id"], data["path"], caption=_preview_text(pending_id))
+                await callback.answer(tr("code_sent"))
+                return
+
             if action == "install":
                 app_client = getattr(client, "userbot", app)
                 module_name = data["module_name"]
-                target = Path("modules/custom_modules") / f"{module_name}.py"
+                target = _target_path(module_name)
                 target.parent.mkdir(parents=True, exist_ok=True)
 
                 await _edit_callback_text(client, callback, f"<b>{tr('installing')}</b>")
+
+                if target.exists():
+                    backup = _backup_path(module_name)
+                    backup.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(target, backup)
+
                 shutil.move(data["path"], target)
                 _pending_modules.pop(pending_id, None)
 
@@ -272,6 +369,8 @@ async def loadmod(client: Client, message: Message):
         "file_name": file_name,
         "module_name": _module_name(file_name),
         "meta": parse_meta_file(str(pending_path)),
+        "warnings": _scan_dangerous(str(pending_path)),
+        "diff": _format_diff(_target_path(_module_name(file_name)), pending_path),
         "chat_id": message.chat.id,
         "message_id": message.id,
         "user_id": message.from_user.id,

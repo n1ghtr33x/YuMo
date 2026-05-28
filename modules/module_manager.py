@@ -341,6 +341,9 @@ def _register_manager_handlers(app: Client, owner_id: int) -> bool:
                 disabled = _disabled_modules()
                 disabled.add(value)
                 _set_disabled_modules(disabled)
+                reasons = db.get("core.modules", "disabled_reasons", {})
+                reasons[value] = "disabled via module_manager"
+                db.set("core.modules", "disabled_reasons", reasons)
                 await _edit_inline_or_message(
                     client,
                     callback,
@@ -354,6 +357,9 @@ def _register_manager_handlers(app: Client, owner_id: int) -> bool:
                 disabled = _disabled_modules()
                 disabled.discard(value)
                 _set_disabled_modules(disabled)
+                reasons = db.get("core.modules", "disabled_reasons", {})
+                reasons.pop(value, None)
+                db.set("core.modules", "disabled_reasons", reasons)
                 await _edit_inline_or_message(
                     client,
                     callback,

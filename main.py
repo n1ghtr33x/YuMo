@@ -58,7 +58,14 @@ if getattr(config, "bot_token", None):
 async def main():
     global bot
 
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+        handlers=[
+            logging.FileHandler("yumo.log", encoding="utf-8"),
+            logging.StreamHandler(),
+        ],
+    )
     DeleteAccount.__new__ = None
 
     try:
@@ -104,7 +111,9 @@ async def main():
 
     for path in Path("modules").rglob("*.py"):
         if path.stem in disabled_modules:
-            logging.info(f"Skipped disabled module {path.stem}")
+            disabled_reasons = db.get("core.modules", "disabled_reasons", {})
+            reason = disabled_reasons.get(path.stem, "no reason stored")
+            logging.info(f"Skipped disabled module {path.stem}: {reason}")
             skipped_modules += 1
             continue
 
