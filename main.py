@@ -123,7 +123,7 @@ async def main():
     if info := db.get("core.updater", "restart_info"):
         text = {
             "restart": "<b>Успешная перезагрузка!</b>",
-            "update": "<b>Update process completed!</b>",
+            "update": "<b>Обновление успешно установлено!</b>",
             "loadmodule": "<b>Модуль успешно загружен!</b>",
             "dellmodule": "<b>Все модули успешно удалены!</b>",
         }[info["type"]]

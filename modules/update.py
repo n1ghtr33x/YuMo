@@ -52,7 +52,7 @@ def _format_output(stdout: str, stderr: str) -> str:
     return escape(output)
 
 
-@Client.on_message(filters.command(["update", "pull"], prefix) & filters.me)
+@Client.on_message(filters.command(["update", "pull", "upd"], prefix) & filters.me)
 async def update_cmd(_, message: Message):
     await message.edit(f"<b>{tr("updating")}</b>")
 
