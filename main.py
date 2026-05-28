@@ -99,8 +99,15 @@ async def main():
 
     success_modules = 0
     failed_modules = 0
+    skipped_modules = 0
+    disabled_modules = set(db.get("core.modules", "disabled", []))
 
     for path in Path("modules").rglob("*.py"):
+        if path.stem in disabled_modules:
+            logging.info(f"Skipped disabled module {path.stem}")
+            skipped_modules += 1
+            continue
+
         try:
             await load_module(
                 path.stem,
@@ -114,6 +121,9 @@ async def main():
             success_modules += 1
 
     logging.info(f"Imported {success_modules} modules")
+
+    if skipped_modules:
+        logging.info(f"Skipped {skipped_modules} disabled modules")
 
     if failed_modules:
         logging.warning(f"Failed to import {failed_modules} modules")
