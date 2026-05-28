@@ -56,8 +56,15 @@ def _command_count() -> int:
     return sum(len(_commands(module_data)) for module_data in modules_help.values())
 
 
+def _command_names(command: str) -> list[str]:
+    return command.split()[0].split("/")
+
+
 def _command_chip(command: str) -> str:
-    return f"<code>{prefix}{command.split()[0]}</code>"
+    return "/".join(
+        f"<code>{prefix}{name}</code>"
+        for name in _command_names(command)
+    )
 
 
 def _format_index_header() -> str:
@@ -162,7 +169,7 @@ async def help_cmd(_, message: Message):
 
     for module_name, module_data in modules_help.items():
         for command, description in _commands(module_data).items():
-            if command.split()[0] == query:
+            if query in _command_names(command):
                 await message.edit(
                     _format_command_help(module_name, command, description),
                     disable_web_page_preview=True,

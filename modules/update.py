@@ -114,5 +114,5 @@ modules_help["update"] = {
         "description": tr.lazy("meta.description"),
         "pic": "https://i.ibb.co/xSR9fQHH/restart.png",
     },
-    "update/pull": tr.lazy("meta.help"),
+    "update/pull/upd": tr.lazy("meta.help"),
 }
