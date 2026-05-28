@@ -10,38 +10,51 @@ from utils.misc import modules_help, prefix
 
 strings = {
     "ru": {
-        "title": "<b>Справочник YuMo</b>",
-        "subtitle": "Модулей: <code>{count}</code> | Команд: <code>{commands}</code>",
-        "hint": "Подробнее: <code>{prefix}help [модуль]</code> или <code>{prefix}help [команда]</code>",
-        "module_title": "<b>Модуль: <code>{module}</code></b>",
+        "brand": "YuMo Help",
+        "title": "Справочник модулей",
+        "stats": "Модулей: <code>{count}</code>  |  Команд: <code>{commands}</code>",
+        "usage": "<code>{prefix}help [модуль]</code> или <code>{prefix}help [команда]</code>",
+        "module_title": "Карточка модуля",
+        "command_title": "Карточка команды",
         "version": "Версия",
         "description": "Описание",
         "commands": "Команды",
+        "module": "Модуль",
+        "aliases": "Алиасы",
+        "usage_label": "Формат",
         "no_description": "Без описания",
-        "command_title": "<b>Команда: <code>{prefix}{command}</code></b>",
-        "command_module": "Модуль",
-        "not_found": "<b>Не нашел модуль или команду:</b> <code>{name}</code>",
-        "meta.description": "Красивый справочник по модулям",
-        "help.help": "показать общий список, помощь по модулю или команде.",
+        "not_found": "<b>Не нашел модуль или команду:</b> <code>{name}</code>\n<code>{prefix}help</code> покажет весь список.",
+        "meta.description": "Оформленный справочник по модулям",
+        "help.help": "показать красивый список модулей, помощь по модулю или команде.",
     },
     "en": {
-        "title": "<b>YuMo Help Desk</b>",
-        "subtitle": "Modules: <code>{count}</code> | Commands: <code>{commands}</code>",
-        "hint": "More info: <code>{prefix}help [module]</code> or <code>{prefix}help [command]</code>",
-        "module_title": "<b>Module: <code>{module}</code></b>",
+        "brand": "YuMo Help",
+        "title": "Module directory",
+        "stats": "Modules: <code>{count}</code>  |  Commands: <code>{commands}</code>",
+        "usage": "<code>{prefix}help [module]</code> or <code>{prefix}help [command]</code>",
+        "module_title": "Module card",
+        "command_title": "Command card",
         "version": "Version",
         "description": "Description",
         "commands": "Commands",
+        "module": "Module",
+        "aliases": "Aliases",
+        "usage_label": "Usage",
         "no_description": "No description",
-        "command_title": "<b>Command: <code>{prefix}{command}</code></b>",
-        "command_module": "Module",
-        "not_found": "<b>Module or command not found:</b> <code>{name}</code>",
-        "meta.description": "A nicer module help browser",
-        "help.help": "show all modules, module help, or command help.",
+        "not_found": "<b>Module or command not found:</b> <code>{name}</code>\n<code>{prefix}help</code> shows the full list.",
+        "meta.description": "A styled module help browser",
+        "help.help": "show a styled module list, module help, or command help.",
     },
 }
 
 tr = Translator("help", strings)
+
+
+TOP = "╭─────────────────────"
+MID = "├─────────────────────"
+BOT = "╰─────────────────────"
+ITEM = "│"
+BRANCH = "╰─"
 
 
 def _commands(module_data: dict) -> dict:
@@ -60,8 +73,13 @@ def _command_names(command: str) -> list[str]:
     return command.split()[0].split("/")
 
 
+def _command_args(command: str) -> str:
+    parts = command.split(maxsplit=1)
+    return parts[1] if len(parts) > 1 else ""
+
+
 def _command_chip(command: str) -> str:
-    return "/".join(
+    return " ".join(
         f"<code>{prefix}{name}</code>"
         for name in _command_names(command)
     )
@@ -69,9 +87,12 @@ def _command_chip(command: str) -> str:
 
 def _format_index_header() -> str:
     return (
-        f"{tr('title')}\n"
-        f"{tr('subtitle', count=len(modules_help), commands=_command_count())}\n"
-        f"{tr('hint', prefix=prefix)}\n\n"
+        f"{TOP}\n"
+        f"{ITEM} <b>{tr('brand')}</b> · <i>{tr('title')}</i>\n"
+        f"{ITEM} {tr('stats', count=len(modules_help), commands=_command_count())}\n"
+        f"{MID}\n"
+        f"{ITEM} {tr('usage', prefix=prefix)}\n"
+        f"{BOT}\n\n"
     )
 
 
@@ -79,11 +100,16 @@ def _format_index_lines() -> list[str]:
     lines = []
 
     for module_name, module_data in sorted(modules_help.items()):
-        commands = " ".join(
+        commands = _commands(module_data)
+        command_list = "  ".join(
             _command_chip(command)
-            for command in _commands(module_data)
+            for command in commands
         )
-        lines.append(f"<b>{module_name.title()}</b> - {commands}")
+
+        lines.append(
+            f"<b>{module_name.title()}</b>\n"
+            f"{BRANCH} {command_list}"
+        )
 
     return lines
 
@@ -94,29 +120,39 @@ def _format_module_help(module_name: str) -> tuple[str, str | None]:
     commands = _commands(module)
 
     text = (
-        f"{tr('module_title', module=module_name.title())}\n"
-        f"<b>{tr('version')}:</b> <code>{meta.get('version', 'unknown')}</code>\n"
-        f"<b>{tr('description')}:</b> <i>{meta.get('description', tr('no_description'))}</i>\n\n"
-        f"<b>{tr('commands')}:</b>\n"
+        f"{TOP}\n"
+        f"{ITEM} <b>{tr('module_title')}</b> · <code>{module_name}</code>\n"
+        f"{ITEM} <b>{tr('version')}:</b> <code>{meta.get('version', 'unknown')}</code>\n"
+        f"{ITEM} <b>{tr('description')}:</b> <i>{meta.get('description', tr('no_description'))}</i>\n"
+        f"{MID}\n"
+        f"{ITEM} <b>{tr('commands')}</b>\n"
     )
 
     for command, description in commands.items():
-        parts = command.split(maxsplit=1)
-        args = f" <code>{parts[1]}</code>" if len(parts) > 1 else ""
-        text += f"\n{_command_chip(command)}{args} - <i>{description}</i>"
+        args = f" <code>{_command_args(command)}</code>" if _command_args(command) else ""
+        text += (
+            f"{ITEM}\n"
+            f"{ITEM} {_command_chip(command)}{args}\n"
+            f"{BRANCH} <i>{description}</i>\n"
+        )
 
+    text += BOT
     return text, meta.get("pic")
 
 
 def _format_command_help(module_name: str, command: str, description: str) -> str:
-    parts = command.split(maxsplit=1)
-    args = f" <code>{parts[1]}</code>" if len(parts) > 1 else ""
+    args = f" <code>{_command_args(command)}</code>" if _command_args(command) else ""
 
     return (
-        f"{tr('command_title', prefix=prefix, command=parts[0])}\n"
-        f"<b>{tr('command_module')}:</b> <code>{module_name}</code> "
-        f"(<code>{prefix}help {module_name}</code>)\n\n"
-        f"{_command_chip(command)}{args} - <i>{description}</i>"
+        f"{TOP}\n"
+        f"{ITEM} <b>{tr('command_title')}</b>\n"
+        f"{ITEM} <b>{tr('module')}:</b> <code>{module_name}</code>\n"
+        f"{ITEM} <b>{tr('aliases')}:</b> {_command_chip(command)}\n"
+        f"{ITEM} <b>{tr('usage_label')}:</b> {_command_chip(command)}{args}\n"
+        f"{MID}\n"
+        f"{ITEM} <i>{description}</i>\n"
+        f"{BOT}\n\n"
+        f"<code>{prefix}help {module_name}</code>"
     )
 
 
@@ -126,7 +162,7 @@ async def _send_index(message: Message) -> None:
     edited = False
 
     for line in _format_index_lines():
-        chunk = f"{line}\n"
+        chunk = f"{line}\n\n"
 
         if len(text) + len(chunk) >= 3900:
             if edited:
@@ -176,12 +212,12 @@ async def help_cmd(_, message: Message):
                 )
                 return
 
-    await message.edit(tr("not_found", name=query))
+    await message.edit(tr("not_found", name=query, prefix=prefix))
 
 
 modules_help["help"] = {
     "__meta__": {
-        "version": "1.1.0",
+        "version": "1.2.0",
         "description": tr.lazy("meta.description"),
         "pic": "https://i.ibb.co/4ZfyNcL6/help.png",
     },
