@@ -103,7 +103,6 @@ BOT = "╰─────────────────────"
 ITEM = "│"
 BRANCH = "╰─"
 PAGE_SIZE = 7
-PROTECTED_MODULES = {"module_manager", "settings", "loader", "restart"}
 _handlers_registered = False
 _owner_id = None
 
@@ -131,7 +130,8 @@ def _is_disabled(module_name: str) -> bool:
 
 
 def _is_protected(module_name: str) -> bool:
-    return module_name in PROTECTED_MODULES
+    path = _module_path(module_name)
+    return not path or "custom_modules" not in Path(path).parts
 
 
 def _status(module_name: str) -> str:
