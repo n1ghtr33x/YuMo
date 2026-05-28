@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 
+from html import escape
+
 from pyrogram import Client, filters, errors
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InlineQueryResultArticle,
+    InputTextMessageContent,
+    Message,
+)
 
 from utils.db import db
 from utils.i18n import Translator, available_langs, get_lang, set_lang
+from utils.inline import inline_command
 from utils.misc import modules_help, prefix
 from utils.scripts import restart
 
@@ -19,6 +28,8 @@ strings = {
         "commands": "Команд",
         "hint": "Выбери действие кнопками ниже.",
         "no_bot": "<b>Inline-бот не запущен.</b>\nДобавь <code>bot_token</code> в конфиг, чтобы кнопки работали.",
+        "inline_error": "<b>Не удалось открыть inline-меню:</b> <code>{error}</code>",
+        "inline_empty": "<b>Inline-бот не вернул меню настроек.</b>",
         "prefix_set": "Префикс изменен на {prefix}. Перезапускаюсь...",
         "lang_set": "Язык изменен на {lang}",
         "unknown_lang": "Неизвестный язык: {lang}",
@@ -41,6 +52,8 @@ strings = {
         "commands": "Commands",
         "hint": "Choose an action with the buttons below.",
         "no_bot": "<b>Inline bot is not running.</b>\nAdd <code>bot_token</code> to config to use buttons.",
+        "inline_error": "<b>Failed to open inline menu:</b> <code>{error}</code>",
+        "inline_empty": "<b>Inline bot did not return the settings menu.</b>",
         "prefix_set": "Prefix changed to {prefix}. Restarting...",
         "lang_set": "Language changed to {lang}",
         "unknown_lang": "Unknown language: {lang}",
@@ -206,19 +219,43 @@ def _register_settings_handlers(app: Client, owner_id: int) -> bool:
     return True
 
 
+@inline_command("settings", tr("meta.description"))
+async def inline_settings(app: Client, query, args):
+    _register_settings_handlers(app, query.from_user.id)
+
+    return [
+        InlineQueryResultArticle(
+            title=tr("title"),
+            description=tr("subtitle"),
+            input_message_content=InputTextMessageContent(_panel_text()),
+            reply_markup=_panel_markup(),
+        )
+    ]
+
+
 @Client.on_message(filters.command(["settings", "cfg", "config"], prefix) & filters.me)
 async def settings_cmd(client: Client, message: Message):
     if not _register_settings_handlers(client, message.from_user.id):
         await message.edit(tr("no_bot"))
         return
 
-    await client.bot.send_message(
-        message.chat.id,
-        _panel_text(),
-        reply_markup=_panel_markup(),
-        disable_web_page_preview=True,
-    )
-    await message.delete()
+    try:
+        bot_me = await client.bot.get_me()
+        results = await client.get_inline_bot_results(bot_me.username, "settings")
+
+        if not results.results:
+            await message.edit(tr("inline_empty"))
+            return
+
+        await client.send_inline_bot_result(
+            message.chat.id,
+            results.query_id,
+            results.results[0].id,
+            reply_to_message_id=message.reply_to_message_id,
+        )
+        await message.delete()
+    except Exception as e:
+        await message.edit(tr("inline_error", error=escape(str(e))))
 
 
 modules_help["settings"] = {
