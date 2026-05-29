@@ -31,7 +31,7 @@ from utils.scripts import (
 )
 
 BASE_PATH = os.path.abspath(os.getcwd())
-PENDING_DIR = Path("/yumo_loader")
+PENDING_DIR = Path("./yumo_loader")
 _pending_modules = {}
 _handlers_registered = False
 _owner_id = None
